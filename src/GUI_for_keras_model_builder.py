@@ -72,7 +72,7 @@ def blah():
 def ok():
     layer_name = cmb_lay.get()
     global file 
-    file = open ("keras_code.txt", "wt")
+    file = open ("keras_code.txt", "a+")
     if layer_name == "Conv2D":
         filters_hp = int(filterss.get())
         strides_hp = list(stridess.get())
@@ -80,6 +80,7 @@ def ok():
         padding_hp = paddingg.get()
         activation_hp = activationn.get()
         file.write(f"model.add(Conv2D({filters_hp}, (int({kernel_size_hp[1]}), int({kernel_size_hp[3]})),strides=(int({strides_hp[1]}), int({strides_hp[3]})), padding= {padding_hp}, activation = {activation_hp}))\n")
+        file.close()
         tree.insert('', 'end',text="1",values=("Conv2D",filters_hp, "-", padding_hp, activation_hp,kernel_size_hp,strides_hp))
         
         warning = Label(window, text="Conv2D added")
@@ -89,12 +90,14 @@ def ok():
         strides_hp = list(stridess.get())
         padding_hp = paddingg.get()
         file.write(f"model.add(MaxPooling2D((int({pool_size_hp[1]}), int({pool_size_hp[3]})), strides=(int({strides_hp[1]}), int({strides_hp[3]})), padding= {padding_hp}))\n")
+        file.close()
         tree.insert('', 'end',text="2",values=("Maxpool2D","-", pool_size_hp , padding_hp, "-","-",strides_hp))
         warning = Label(window, text="maxpool2D added")
         warning.place(x=250, y=470)
     elif layer_name == "Dense":
         activation_hp = activationn.get()
         file.write(f"model.add(Dense(10,activation = {activation_hp}))\n")
+        file.close()
         model.add(Dense(10,activation = activation_hp))
         warning = Label(window, text="Dense added")
         warning.place(x=250, y=490)
@@ -103,6 +106,7 @@ def ok():
     elif layer_name == "Flatten":
         model.add(Flatten())
         file.write(f"model.add(Flatten())\n")
+        file.close()
         warning = Label(window, text="Flatten added")
         warning.place(x=250, y=510)
         tree.insert('', 'end',text="3",values=("Flatten","-", "-" , "-", "-" ,"-", "-"))
@@ -204,11 +208,15 @@ def add_layer():
     
 
 def fit():
+    file = open ("keras_code.txt", "a+")
     file.write(f"model.compile(optimizer='adam',loss='binary_crossentropy',metrics=['accuracy'])\n")
-    file.write(f"model.fit({X_train}, {y_train}, epochs=10, verbose=1)\n")
+    file.write(f"model.fit(X_train, y_train, epochs=10, verbose=1)\n")
+    file.close()
     
 def save():
+    file = open ("keras_code.txt", "a+")
     file.write(f"model.save('model_saved.h5')\n")
+    file.close()
     #model.save('model_saved.h5')
     
 def summeryy():
@@ -222,6 +230,7 @@ def showcode():
     
 
 def execute():
+    global window
     window = Tk()
     window.title("My App")
     window.geometry("680x650")
